@@ -12,6 +12,10 @@
  */
 module.exports = function settings(parentClass) {
 
+  // private variables
+  let _settings = Symbol("settings");
+  let _settingValidators = Symbol("setting validators");
+
   /**
    * settings utility class
    * @class
@@ -30,7 +34,7 @@ module.exports = function settings(parentClass) {
      * @return {*}  the value of the setting
      */
     get(name) {
-      return this._settings[name];
+      return this[_settings][name];
     }
 
 
@@ -43,12 +47,13 @@ module.exports = function settings(parentClass) {
      * @throws will throw if value provided failes validator
      */
     set(name, value) {
-      if(this._setting_validators[name]
-        && ! this._setting_validators[name](value)) {
+      // check for validators
+      if(this[_settingValidators][name]
+        && ! this[_settingValidators][name](value)) {
         throw new Error(`Value: ${value} failed validator for ${name} setting`);
       }
 
-      this._settings[name] = value;
+      this[_settings][name] = value;
 
       return this;
     }
@@ -62,7 +67,7 @@ module.exports = function settings(parentClass) {
      * @return {this}           for chaining
      */
     static ValidateSetting(name, validator) {
-      this.prototype._setting_validators[name] = validator;
+      this.prototype[_settingValidators][name] = validator;
 
       return this;
     }
@@ -77,13 +82,13 @@ module.exports = function settings(parentClass) {
      * @return {this}       for chaining
      */
     static SettingDefault(name, value) {
-      this.prototype._settings[name] = value
+      this.prototype[_settings][name] = value
     }
   }
 
   // prototype
-  Settings.prototype._settings = {};
-  Settings.prototype._setting_validators = {};
+  Settings.prototype[_settings] = {};
+  Settings.prototype[_settingValidators] = {};
 
   return Settings;
 }

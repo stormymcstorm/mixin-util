@@ -22,8 +22,8 @@ describe('settings', function () {
   it('settings can be mixied', function () {
     let t = new Test();
 
-    assert.isTrue(!! t._settings);
-    assert.isTrue(!! t._setting_validators);
+    assert.isTrue(!! t.set);
+    assert.isTrue(!! t.get);
   });
 
   describe('methods', function () {
@@ -32,7 +32,7 @@ describe('settings', function () {
 
       t.set('test', 4);
 
-      assert.equal(t.get('test'), 4); 
+      assert.equal(t.get('test'), 4);
     });
   });
 

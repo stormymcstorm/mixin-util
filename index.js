@@ -31,4 +31,5 @@ function mixin(...mixins) {
   }, class Mixied{});
 }
 
+// mixins
 exports.settings = require('./mixins/settings');

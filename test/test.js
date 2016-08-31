@@ -13,5 +13,5 @@ it('mixinUtil', function () {
 
   let t = new Test();
 
-  assert.isTrue(!! t._settings);
+  assert.isTrue(!! t.set);
 });
