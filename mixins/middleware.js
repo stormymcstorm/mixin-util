@@ -55,28 +55,32 @@ module.exports = function middleware(parentClass) {
 
       // look for a error handler
       for (let i = 0; i < stack.length; i++) {
-        if(stack[i].length >= args.length + 2) errHandler = stack.splice(i, 1);
-      }
-
-      function next(nextInStack, err) {
-        if(err) {
-          if(! errHandler) {
-            throw err;
-          }
-
-          errHandler(err, ...args);
-          return;
-        }
-
-        if(nextInStack) nextInStack();
+        if(stack[i].length >= args.length + 2) [errHandler] = stack.splice(i, 1);
       }
 
       // build call chain
-      let call = stack.slice(0).reverse().reduce((prev, current, i) => {
-        if(i == 1) prev = prev.bind(self, ...args, function () {});
+      let call = stack.reverse().reduce((prev, current, i) => {
+        return function next(err){
+          if(err) {
+            if(! errHandler)throw err;
 
-        return current.bind(self, ...args, next.bind(null, prev));
+            errHandler.call(self, err, ...args, function () {});
+          }
+          else {
+            current.call(self, ...args, prev);
+          }
+        }
+      }, function next(err) {
+        if(err) {
+          if(! errHandler)throw err;
+
+          errHandler.call(self, err, ...args);
+        }
       });
+
+      // clean stack for later use
+      stack.reverse();
+      if(errHandler) stack.push(errHandler);
 
       call();
 
@@ -88,6 +92,14 @@ module.exports = function middleware(parentClass) {
 }
 
 
+
+/**
+ * flatten - flattens array
+ *
+ * @param  {Array} array     the array to flatten
+ * @param  {Array} [result=[]] used to run recursivly
+ * @return {Array} the flatten array
+ */
 function flatten(array, result=[]) {
   for (let i = 0; i < array.length; i++) {
     let val = array[i];

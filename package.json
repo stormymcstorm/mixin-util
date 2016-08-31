@@ -1,6 +1,6 @@
 {
   "name": "mixin-util",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A mixin utility for ES2015 classes",
   "main": "index.js",
   "scripts": {
@@ -12,8 +12,15 @@
   },
   "keywords": [
     "mixin",
-    "classes"
+    "classes",
+    "settings",
+    "middleware",
+    "utility",
+    "util"
   ],
+  "engines": {
+    "node": ">= 6.x"
+  },
   "author": "Carson Storm",
   "license": "MIT",
   "bugs": {

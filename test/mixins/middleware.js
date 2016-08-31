@@ -39,18 +39,19 @@ describe('middleware', function () {
     it('error handler', function () {
       let t = new Test();
 
-      t.use(function ({called}, next) {
-        called++;
+      t.use(function (a, next) {
+        a.called++;
+
         next();
       });
 
-      t.use(function handler(err, {called}, next) {
+      t.use(function handler(err, a, next) {
         assert.equal(err.status, 407);
-        assert.equal(called, 2);
+        assert.equal(a.called, 2);
       });
 
-      t.use(function ({called}, next) {
-        called++;
+      t.use(function (a, next) {
+        a.called++;
 
         let err = new Error('test');
         err.status = 407;
@@ -58,6 +59,7 @@ describe('middleware', function () {
         next(err);
       });
 
+      t.handle({called: 0});
       t.handle({called: 0});
     });
     it('basic', function () {
