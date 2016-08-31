@@ -6,8 +6,8 @@
 /**
  * middleware - a mixin for middleware utility
  *
- * @param {Function} parentClass the parent class to extended.
- * @return {Function} the extended class
+ * @param {Function} parentClass the parent class to extend.
+ * @return {Function}     the extended class
  */
 module.exports = function middleware(parentClass) {
   // private
@@ -35,6 +35,13 @@ module.exports = function middleware(parentClass) {
     use(...fns) {
       fns = flatten(fns);
 
+      if(fns.length < 1) throw new Error(".use requires a middleware function");
+
+      for (let i = 0; i < fns.length; i++) {
+        if(typeof fns[i] != 'function') throw new
+          Error(`${typeof fns[i]} is an invalid type for .use`);
+      }
+
       this[_stack].push(...fns);
 
       return this;
@@ -58,25 +65,40 @@ module.exports = function middleware(parentClass) {
         if(stack[i].length >= args.length + 2) [errHandler] = stack.splice(i, 1);
       }
 
+      function handleStackError(err) {
+        if(! errHandler)throw err;
+
+        errHandler.call(self, err, ...args, function () {});
+      }
+
+      function buildNext(prev, current){
+        let called = false;
+
+        return function next(err) {
+          // stop
+          if(called) return;
+
+          called = true;
+          if(err) {
+            handleStackError(err);
+            return;
+          }
+
+          // stop
+          if(! current || ! prev) return;
+
+          try {
+            current.call(self, ...args, prev);
+          } catch (e) {
+            handleStackError(err);
+          }
+        }
+      }
+
       // build call chain
       let call = stack.reverse().reduce((prev, current, i) => {
-        return function next(err){
-          if(err) {
-            if(! errHandler)throw err;
-
-            errHandler.call(self, err, ...args, function () {});
-          }
-          else {
-            current.call(self, ...args, prev);
-          }
-        }
-      }, function next(err) {
-        if(err) {
-          if(! errHandler)throw err;
-
-          errHandler.call(self, err, ...args);
-        }
-      });
+        return buildNext(prev, current);
+      }, buildNext());
 
       // clean stack for later use
       stack.reverse();
