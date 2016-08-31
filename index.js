@@ -33,3 +33,4 @@ function mixin(...mixins) {
 
 // mixins
 exports.settings = require('./mixins/settings');
+exports.middleware = require('./mixins/middleware');

@@ -12,7 +12,7 @@
  */
 module.exports = function settings(parentClass) {
 
-  // private variables
+  // private
   let _settings = Symbol("settings");
   let _settingValidators = Symbol("setting validators");
 
