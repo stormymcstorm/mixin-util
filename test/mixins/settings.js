@@ -59,5 +59,17 @@ describe('settings', function () {
 
       assert.equal(t.get('test'), 'this is the default');
     });
+
+    it('SettingTransform', function () {
+      Test.SettingTransform('test', function (val) {
+        return val.toUpperCase();
+      });
+
+      let t = new Test();
+
+      t.set('test', 'works');
+
+      assert.equal(t.get('test'), 'WORKS');
+    });
   });
 });

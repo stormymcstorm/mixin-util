@@ -1,6 +1,6 @@
 {
   "name": "mixin-util",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A mixin utility for ES2015 classes",
   "main": "index.js",
   "scripts": {
