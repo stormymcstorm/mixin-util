@@ -28,6 +28,13 @@ module.exports = function settings(parentClass) {
       super();
     }
 
+
+    /**
+     * load - loads a object into config
+     *
+     * @param  {Object} src
+     * @return {this}     for chaining
+     */
     load(src){
       lodash.merge(this[_settings], src);
 
@@ -41,6 +48,8 @@ module.exports = function settings(parentClass) {
      * @return {*}  the value of the setting
      */
     get(name) {
+      if(name == '.') return Object.assign({}, this[_settings]);
+
       return fromPath(this[_settings], name);
     }
 
