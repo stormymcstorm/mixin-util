@@ -43,6 +43,18 @@ describe('settings', function () {
 
       assert.deepEqual(t.get('a'), {a: 'this is a', b: 'this is b'});
     });
+
+    it('load', function () {
+      let t = new Test();
+
+      t.load({
+        foo: 'bar',
+        bar: 'foo',
+      });
+
+      assert.equal(t.get('foo'), 'bar');
+      assert.equal(t.get('bar'), 'foo');
+    });
   });
 
   describe('static', function () {

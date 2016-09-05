@@ -3,6 +3,7 @@
  * @alias mixinUtil.settings
  */
 
+const lodash = require('lodash');
 
 /**
  * settings - a mixin for adding settings utility
@@ -27,6 +28,11 @@ module.exports = function settings(parentClass) {
       super();
     }
 
+    load(src){
+      lodash.merge(this[_settings], src);
+
+      return this;
+    }
 
     /**
      * returns value of setting
