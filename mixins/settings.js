@@ -73,8 +73,8 @@ module.exports = function settings(parentClass) {
      * @param  {Function} validator description
      * @return {this}           for chaining
      */
-    static ValidateSetting(name, validator) {
-      this.prototype[_settingValidators][name] = validator;
+    static ValidateSetting(name, validator, context=this.prototype) {
+      context[_settingValidators][name] = validator;
 
       return this;
     }
@@ -88,14 +88,14 @@ module.exports = function settings(parentClass) {
      * @param  {*} value the value for the setting
      * @return {this}       for chaining
      */
-    static SettingDefault(name, value) {
-      this.prototype[_settings][name] = value;
+    static SettingDefault(name, value, context=this.prototype) {
+      context[_settings][name] = value;
 
       return this;
     }
 
-    static SettingTransform(name, transformer) {
-      this.prototype[_settingTransformers][name] = transformer;
+    static SettingTransform(name, transformer, context=this.prototype) {
+      context[_settingTransformers][name] = transformer;
 
       return this;
     }
