@@ -35,7 +35,7 @@ module.exports = function settings(parentClass) {
      * @return {*}  the value of the setting
      */
     get(name) {
-      return this[_settings][name];
+      return fromPath(this[_settings], name);
     }
 
 
@@ -56,11 +56,11 @@ module.exports = function settings(parentClass) {
 
       // check for transformer
       if(this[_settingTransformers][name]) {
-        this[_settings][name] = this[_settingTransformers][name](value);
+        fromPath(this[_settings], name, this[_settingTransformers][name](value));
         return this;
       }
 
-      this[_settings][name] = value;
+      fromPath(this[_settings], name, value);
 
       return this;
     }
@@ -107,4 +107,18 @@ module.exports = function settings(parentClass) {
   Settings.prototype[_settingTransformers] = {};
 
   return Settings;
+}
+
+function fromPath(base, path, val) {
+  return path.split('.').reduce(function (prev, current, i) {
+    if(! prev) return;
+
+    // for set
+    if(val && ! prev[current]) prev[current] = {};
+
+    // for last
+    if(val && i === path.split('.').length - 1) prev[current] = val;
+
+    return prev[current];
+  }, base);
 }
