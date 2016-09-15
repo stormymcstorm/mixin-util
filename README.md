@@ -81,7 +81,7 @@ middle.handle(icecream);
 ```
 
 ### Settings
-This mixin adds setting functionality
+This mixin adds setting functionality. For Each of these methods the instance methods applies to the instance and the static method applies to the prototype.
 
 #### .set
 This method accepts the name of the setting and the new value
@@ -98,42 +98,29 @@ This method accepts the name of the setting and returns the value of that settin
 // returns 'works'
 ```
 
-#### .ValidateSetting
-This static method accepts the name of the setting and a function that should accept a value and return true if the value is valid.
+#### .Setter
+This method will assign a setter to a setting. The setter function should accept a value and return the transformed value.
 
 ```javascript
-class MySets extends mixinUtil('settings'){
-  constructor() {
-    super();
-  }
-}
-
-MySets.ValidateSetting('test', function (val) {
-  return typeof val == 'string';
+.Setter('name', function uppercase(name) {
+  return name.toUpperCase();
 });
-
-let sets = new MySets();
-
-// throws
-sets.set('test', 4);
 ```
 
-#### .SettingDefault
-This static method sets the default for a setting. It accepts the name of the setting and a value.
+#### .Getter
+This method will assign a getter to a setting. You can think of a getter as a imaginary setting. The getter function should accept a object containing all of the settings.
 
 ```javascript
-class MySets extends mixinUtil('settings'){
-  constructor() {
-    super();
-  }
-}
+// Settings -> {
+//   name: {
+//     first: 'john',
+//     last: 'doe',
+//   }
+// }
 
-MySets.SettingDefault('test', 'works');
-
-let sets = new MySets();
-
-// returns 'works'
-sets.get('test');
+.Getter('name.full', function fullname(settings) {
+  return `${settings.name.first} ${settings.name.last}`;
+});
 ```
 
 ## Mixin Pattern

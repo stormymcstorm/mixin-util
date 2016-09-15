@@ -1,96 +1,103 @@
 "use strict"
+const mixin = require('../../index');
+const {expect} = require('chai');
 
-const assert = require('chai').assert;
-
-const mixinUtil = require('../../index');
-
-describe('settings', function () {
+describe('Settings ', function () {
   let Test;
 
   beforeEach(function () {
-    Test = class extends mixinUtil('settings') {
+    Test = class extends mixin('settings') {
       constructor() {
         super();
       }
     }
   });
-
   afterEach(function () {
     Test = undefined;
   });
 
-  it('settings can be mixied', function () {
+  it('Setter', function () {
+    expect(Test.Setter('asas', function () {})).to.eql(Test);
+
+    Test.Setter('foo', function (value) {
+      return 'bar';
+    });
+
     let t = new Test();
 
-    assert.isTrue(!! t.set);
-    assert.isTrue(!! t.get);
+    t.Setter('bar', function () {
+      return 'foo';
+    });
+
+    t.set('foo', 'blah');
+    t.set('bar', 'blah');
+
+    expect(t.get('foo')).to.equal('bar');
+    expect(t.get('bar')).to.equal('foo');
   });
 
-  describe('methods', function () {
-    it('set & get', function () {
-      let t = new Test();
+  it('Getter', function () {
+    expect(Test.Setter('asas', function () {})).to.eql(Test);
 
-      t.set('test', 4);
-
-      assert.equal(t.get('test'), 4);
+    Test.Getter('name.full', function (settings) {
+      return settings.name.first + ' ' + settings.name.last;
     });
 
-    it('deep set & get', function () {
-      let t = new Test();
+    let t = new Test();
 
-      t.set('a.b', 'this is b');
-      t.set('a.a', 'this is a');
-
-      assert.deepEqual(t.get('a'), {a: 'this is a', b: 'this is b'});
+    t.Getter('foo', function () {
+      return 'bar';
     });
 
-    it('load', function () {
-      let t = new Test();
-
-      t.load({
-        foo: 'bar',
-        bar: 'foo',
-      });
-
-      assert.equal(t.get('foo'), 'bar');
-      assert.equal(t.get('bar'), 'foo');
+    t.set('name', {
+      first: 'john',
+      last: 'doe'
     });
+
+    expect(t.get('name.full')).to.equal('john doe');
+    expect(t.get('foo')).to.equal('bar');
   });
 
-  describe('static', function () {
+  it('set', function () {
+    expect(Test.set('')).to.equal(Test);
 
-    it('ValidateSetting', function () {
-      Test.ValidateSetting('test', function (val) {
-        return typeof val == 'string';
-      });
+    Test.set('foo', 'bar');
 
-      let t = new Test();
+    let t = new Test();
 
-      assert.throws(t.set.bind(t, 'test', 4));
+    t.set('bar', 'foo');
 
-      t.set('test', 'works');
+    expect(t.get('foo')).to.equal('bar');
+    expect(t.get('bar')).to.equal('foo');
+  });
 
-      assert.equal(t.get('test'), 'works');
+  it('get', function () {
+    Test.set('foo', 'bar');
+
+    let t = new Test();
+
+    t.set('bar', 'foo');
+
+    expect(Test.get('foo')).to.equal('bar');
+    expect(t.get('bar')).to.equal('foo');
+    expect(t.get('')).to.be.an('object');
+  });
+
+  it('load', function () {
+    Test.load({
+      NODE_ENV: 'development',
+      PORT: 3000,
     });
 
-    it('SettingDefault', function () {
-      Test.SettingDefault('test', 'this is the default');
+    expect(Test.get('PORT')).to.equal(3000);
 
-      let t = new Test();
+    let t = new Test();
 
-      assert.equal(t.get('test'), 'this is the default');
+    t.load({
+      PORT: 4000,
     });
 
-    it('SettingTransform', function () {
-      Test.SettingTransform('test', function (val) {
-        return val.toUpperCase();
-      });
-
-      let t = new Test();
-
-      t.set('test', 'works');
-
-      assert.equal(t.get('test'), 'WORKS');
-    });
+    expect(t.get('PORT')).to.equal(4000);
+    expect(t.get('NODE_ENV')).to.equal('development');
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "mixin-util",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A mixin utility for ES2015 classes",
   "main": "index.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "mocha": "^3.0.2"
   },
   "dependencies": {
-    "lodash": "^4.15.0"
+    "lodash": "^4.15.0",
+    "private-properties": "^1.0.0"
   }
 }
