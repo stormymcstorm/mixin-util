@@ -32,7 +32,6 @@
     "mocha": "^3.0.2"
   },
   "dependencies": {
-    "lodash": "^4.15.0",
     "private-properties": "^1.0.0"
   }
 }
