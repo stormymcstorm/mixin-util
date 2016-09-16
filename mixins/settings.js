@@ -41,7 +41,7 @@ module.exports = function settings(parentClass) {
     // use getter
     if(_(context).getters[name]) {
       // don't mutate
-      return _(context).getters[name](clone(_(context).settings));
+      return _(context).getters[name].call(context, clone(_(context).settings));
     }
 
     return fromPath(name, clone(_(context).settings));
@@ -59,7 +59,7 @@ module.exports = function settings(parentClass) {
 
     // use setter
     if(_(context).setters[name]) {
-      fromPath(name, _(context).settings, _(context).setters[name](value));
+      fromPath(name, _(context).settings, _(context).setters[name].call(context)(value));
       return this;
     }
 
