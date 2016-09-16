@@ -59,7 +59,7 @@ module.exports = function settings(parentClass) {
 
     // use setter
     if(_(context).setters[name]) {
-      fromPath(name, _(context).settings, _(context).setters[name].call(context)(value));
+      fromPath(name, _(context).settings, _(context).setters[name].call(context, value));
       return this;
     }
 

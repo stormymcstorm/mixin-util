@@ -1,10 +1,10 @@
 {
   "name": "mixin-util",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A mixin utility for ES2015 classes",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "node node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
